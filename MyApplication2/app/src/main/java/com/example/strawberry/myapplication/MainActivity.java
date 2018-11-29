@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] orientation = new float[3];
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
+    private int[] mColors = new int[361];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
     @Override
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         txt_compass = findViewById(R.id.txt_azimuth);
         main = findViewById(R.id.main);
+        getColors();
         start();
     }
 
@@ -62,33 +65,42 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         String where = "NW";
 
+        main.setBackgroundColor(mColors[mAzimuth]);
         if (mAzimuth >= 350 || mAzimuth <= 10){
             where = "N";
-            main.setBackgroundColor(Color.parseColor("#FF5C5A"));
         } else if(mAzimuth < 350 && mAzimuth > 280){
             where = "NW";
-            main.setBackgroundColor(Color.parseColor("#FFFFFF"));
         } else if (mAzimuth <= 280 && mAzimuth > 260){
             where = "W";
-            main.setBackgroundColor(Color.parseColor("#37343F"));
         } else if(mAzimuth <= 260 && mAzimuth > 190){
             where = "SW";
-            main.setBackgroundColor(Color.parseColor("#FFFFFF"));
         } else if (mAzimuth <= 190 && mAzimuth > 170){
             where = "S";
-            main.setBackgroundColor(Color.parseColor("#FAD951"));
         } else if (mAzimuth <= 170 && mAzimuth > 100){
             where = "SE";
-            main.setBackgroundColor(Color.parseColor("#FFFFFF"));
         } else if(mAzimuth <= 100 && mAzimuth > 80){
             where = "E";
-            main.setBackgroundColor(Color.parseColor("#BD00FB"));
         } else if(mAzimuth <= 80 && mAzimuth > 10){
             where = "NE";
-            main.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
-
         txt_compass.setText(mAzimuth + "° " + where);
+    }
+
+    public void getColors(){
+        int r =0;
+        int b =0;
+        float d = 255/180;
+        for(int i =0; i<181; i++){
+            b =(int) (255 - (i*d));
+            r =(int) (i*d);
+            int color = Color.rgb(r, 0, b);
+            mColors[i] = color;
+        }
+        int j = 180;
+        for(int i=181; i< 361;i++){
+            mColors[i] = mColors[j];
+            j--;
+        }
     }
 
     @Override
